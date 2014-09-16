@@ -15,8 +15,10 @@ CSPath = ['./data/CS_test_CSA_24.out'];
 SchedulePath = ['./data/imageSolution_24cam.out'];
 mapString = ['./data/24cam_r500_map.out'];
 matSolution = dlmread(SchedulePath);
+vecDirection = dlmread('./data/24cam_r500_dir.out');
 
 [totalNodes radius x y Gij Gib]= parse_Map_v1(mapString);
+radius = 150;
 [ maxChNum powerMax C2WT payoffs SAFac TimeMs1st TimeMs2nd EnergyJ1st ...
     EnergyJ2nd clusterStru headList TxPower  ] = parse_Stru_v2 ...
     (CSPath,totalNodes);
@@ -65,7 +67,15 @@ for ii=1:3
                 Y(1) = y(headName(i));
                 X(2) = x(j);
                 Y(2) = y(j);
+                theta = vecDirection(j)+pi/2;
+                r = 30;
+                u = x(j) + r * cos(theta); % convert polar (theta,r) to cartesian
+                v = y(j) + r * sin(theta);
                 if matSolution(ii,j) == 1
+                    ARR = arrow([x(j) y(j)],[u v],'BaseAngle',30,'length',15,'width',1.5,...
+                        'EdgeColor',[1 0 0],'FaceColor',[1 0 0]);
+                    set( get(get(ARR,'Annotation'),'LegendInformation'),...
+                        'IconDisplayStyle','off');
                     hLine = plot(X,Y, ...
                         'Color',[1 0 0], ...
                         'LineWidth',1);
@@ -73,6 +83,10 @@ for ii=1:3
                         'IconDisplayStyle','off');
                     clusterSize(i) = clusterSize(i)+1;
                 else
+                    ARR = arrow([x(j) y(j)],[u v],'BaseAngle',30,'length',15,'width',0.4,...
+                        'EdgeColor',[0 0.7 1],'FaceColor',[0 0.7 1]);
+                    set( get(get(ARR,'Annotation'),'LegendInformation'),...
+                        'IconDisplayStyle','off');
                     hLine = plot(X,Y,'k:', ...
                         'Color',[0.001 0.001 0.001], ...
                         'LineWidth',1);
@@ -175,5 +189,7 @@ set(gca,'YTickLabel',['']);
 % xlabel({'x-axis(m)'});
 % ylabel('y-axis(m)');
 hold off;
-legend('show','Orientation','horizontal');
+legend1 = legend('show','Orientation','horizontal');
+set(legend1,...
+    'Position',[0.23590909090909 0.854000000000001 0.564545454545455 0.0025]);
 end

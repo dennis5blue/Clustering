@@ -32,7 +32,7 @@ powerBound = 1e-6;
     (path{ii},totalNodes);
 headName=headList;
 
-radius = 130;
+radius = 150;
 densityScale = 1000;%km square
 density = totalNodes / (pi*(radius/densityScale)^2) ;
 %Aboves are basic parameter input
@@ -73,7 +73,6 @@ for i=1:maxChNum
      r = 30;
      u = x(j) + r * cos(theta); % convert polar (theta,r) to cartesian
      v = y(j) + r * sin(theta);
-     [x(j) y(j) u v]
      arrow([x(j) y(j)],[u v],'BaseAngle',30,'length',15,'width',0.4);
      hLine = plot(X,Y,'k:','Color',[0.001 0.001 0.001],'LineWidth',1);
      set(get(get(hLine,'Annotation'),'LegendInformation'),...
