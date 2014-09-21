@@ -1,4 +1,27 @@
-function sol = LPsolver(iToFix,nToFix)
+function [totalPower, convFlag, exitflag] = LPsolver(matFix)
+    % size of matFix is |S|*N
+    iToWake = [];
+    nToWake = [];
+    iToSleep = [];
+    nToSleep = [];
+    for i=1:length(matFix(:,1))
+        wakeSlot = find(matFix(i,:)==1);
+        sleepSlot = find(matFix(i,:)==0);
+        wakeTimes = length(wakeSlot);
+        sleepTimes = length(sleepSlot);
+        if wakeTimes > 0
+            for j=1:wakeTimes
+                iToWake = [iToWake i];
+                nToWake = [nToWake wakeSlot(j)];
+            end
+        end
+        if sleepTimes > 0
+            for j=1:sleepTimes
+                iToSleep = [iToSleep i];
+                nToSleep = [nToSleep sleepSlot(j)];
+            end
+        end
+    end
 
     map = dlmread('../sourceData/24cam_r500_map.out');
     idtEntropy = dlmread('../sourceData/24cam_r500_idt.out');
@@ -56,20 +79,31 @@ function sol = LPsolver(iToFix,nToFix)
     objective = zeros(1,numSV);
 
     %
-    % y1,1
-    % y1,2
-    % y1,3
-    % y2,1
-    % y2,2
-    % y2,3
-    % q1,1
-    % q1,2
-    % q1,3
-    % q2,1
-    % q2,2
-    % q2,3
-    %
-
+    %       -- y1,1   --
+    %       |  y1,2    |
+    %       |    .     |
+    %       |    .     |
+    %       |    .     |
+    %       |  y1,N    |
+    %       |  y2,1    |
+    %       |  y2,2    |
+    %       |    .     |
+    %       |    .     |
+    %       |    .     |
+    % sol = |  y|S|,N  |
+    %       |  q1,1    |
+    %       |  q1,2    |
+    %       |    .     |
+    %       |    .     |
+    %       |    .     |
+    %       |  q1,N    |
+    %       |  q2,1    |
+    %       |  q2,2    |
+    %       |    .     |
+    %       |    .     |
+    %       |    .     |
+    %       -- q|S|,N --
+    
     % interference constraint: \Psi Y - A^T Q \leq \Phi-B
     conIndex = 1; % constarint index
     for i=1:length(clusterMembers)
@@ -122,8 +156,17 @@ function sol = LPsolver(iToFix,nToFix)
     % set the equality constraint (make sure all the nodes are supported)
     % mouda does not have this equaltiy constraint
     eqIndex = numMembers*tier2NumSlot+1;
-    Aeq( ((iToFix-1)*tier2NumSlot + nToFix),((iToFix-1)*tier2NumSlot + nToFix) ) = 1;
-    beq((iToFix-1)*tier2NumSlot + nToFix) = 1;
+    % This is for the branching
+    for i=1:length(iToWake)
+        Aeq( ((iToWake(i)-1)*tier2NumSlot + nToWake(i)),((iToWake(i)-1)*tier2NumSlot + nToWake(i)) ) = 1;
+        beq((iToWake(i)-1)*tier2NumSlot + nToWake(i)) = 1;
+    end
+    for i=1:length(iToSleep)
+        Aeq( ((iToSleep(i)-1)*tier2NumSlot + nToSleep(i)),((iToSleep(i)-1)*tier2NumSlot + nToSleep(i)) ) = 1;
+        beq((iToSleep(i)-1)*tier2NumSlot + nToSleep(i)) = 0;
+    end
+    
+    % This is to make sure that all member machines is supported 
     for i=1:length(clusterMembers)
         m_node = clusterMembers(i);
         for n=1:tier2NumSlot
@@ -146,5 +189,62 @@ function sol = LPsolver(iToFix,nToFix)
         end
     end
 
-    sol = linprog(objective,matConstraints,vecConstraints,Aeq,beq,lb,ub);
+    options = optimset('Display','none');
+    [sol,fval,exitflag] = linprog(objective,matConstraints,vecConstraints,Aeq,beq,lb,ub,[],options);
+    
+    % Calculate the required transmission power for each machine
+    % First, we need to determine Y and Q based on the previous solution
+    Q = zeros(numNodes,tier2NumSlot);
+    Y = zeros(numNodes,tier2NumSlot);
+    % If the solution is not fixed to binary interger, we select one yin to
+    % be 1 based on the probability of yi1~yiN forall nodes i
+    targetyin = [];
+    binaryYin = zeros(numNodes,tier2NumSlot);
+    for i=1:numNodes
+        for n=1:tier2NumSlot
+            targetyin = [targetyin sol( (i-1)*(tier2NumSlot)+n )]; % This is yi1~yiN
+            Q(i,n) = sol( numNodes*tier2NumSlot + (i-1)*tier2NumSlot + n ); % This is qin
+            Y(i,n) = sol( (i-1)*tier2NumSlot + n );
+        end
+        select_n = mySelect(targetyin,[1:tier2NumSlot]);
+        binaryYin(i,select_n) = 1;
+        targetyin = [];
+    end
+    
+%{    
+    % Second, we find the cluster head of each members
+    m_head = 0;
+    numClusters = length(clusterStructure(:,1));
+    vec_head = [];
+    for i=1:numNodes
+        m_index = mod( find(clusterStructure == i),numClusters );
+        if m_index == 0
+            m_head = clusterStructure(numClusters,1);
+        elseif m_index < numClusters
+            m_head = clusterStructure(m_index,1);
+        else
+            error('Unable to find cluster head for a given member');
+        end
+        vec_head = [vec_head m_head];
+    end
+
+    % Third, we can calculate the power consumption of each machine based
+    % on tier-2 interference constraint
+    tempI = 0;
+    vec_I = [];
+%}
+    
+    % check convergence
+    if length(find(Y>0.01)) == numMembers
+        convFlag = 1;
+    else
+        convFlag = 0;
+    end
+    
+    vec_power = [];
+    for i=1:numNodes
+        vec_power = [vec_power sum(Q(i,:).*Y(i,:))];
+    end
+    totalPower = sum(vec_power);
+    
 end
