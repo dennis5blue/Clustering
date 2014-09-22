@@ -11,6 +11,7 @@ tempMin = inf; % record the minimum objective value obtained so far
 tempNotConvNum = numNodes*tier2NumSlot;
 iter = 0;
 maxIter = 2000;
+iterMax = 5000;
 
 %                --           --T
 %                |   i    ...  |
@@ -19,7 +20,10 @@ maxIter = 2000;
 %                --           --
 
 record_ObjValue = [inf; 0];
-for k=1:24 % k means which element to fix (e.g. k=1 means fix y11, k=2 means fix y21 ...)
+for k=1:15 % k means which element to fix (e.g. k=1 means fix y11, k=2 means fix y21 ...)
+    if iter>iterMax
+        break;
+    end
     k
     tempMin
     % Initial branch
@@ -70,26 +74,14 @@ for k=1:24 % k means which element to fix (e.g. k=1 means fix y11, k=2 means fix
                             eval(['recordList_' num2str(k) '_' num2str(i) ' = [tempList recordList_' num2str(k) '_' num2str(i) '];']);
                             tempMin = tier2Power;
                             record_ObjValue = [record_ObjValue [tempMin; iter]];
-                        %{
-                        elseif tier2Power == tempMin
+                        elseif tier2Power >= tempMin 
                             eval(['recordList_' num2str(k) '_' num2str(i) ' = [' num2str(k) '; 0];']);
                             eval(['recordList_' num2str(k) '_' num2str(i) ' = [tempList recordList_' num2str(k) '_' num2str(i) '];']);
-                        %}
-                        elseif tier2Power >= tempMin 
-                            if numNotConvVariables < tempNotConvNum 
-                                eval(['recordList_' num2str(k) '_' num2str(i) ' = [' num2str(k) '; 0];']);
-                                eval(['recordList_' num2str(k) '_' num2str(i) ' = [tempList recordList_' num2str(k) '_' num2str(i) '];']);
-                                tempNotConvNum = numNotConvVariables;
-                            elseif numNotConvVariables >= tempNotConvNum % no help for convergance, and no more better objective: Bound!!!
-                                if i==(2*prev_i - 1) % prevent from no growing tree
-                                    eval(['recordList_' num2str(k) '_' num2str(i) ' = [' num2str(k) '; 0];']);
-                                    eval(['recordList_' num2str(k) '_' num2str(i) ' = [tempList recordList_' num2str(k) '_' num2str(i) '];']);
-                                end
-                                continue;
-                            end
+                            tempNotConvNum = numNotConvVariables;
                         end
-                    elseif feasibleFlag ~= 1 % Infeasible: Bound!!!
-                        continue;
+                    elseif feasibleFlag ~= 1
+                        eval(['recordList_' num2str(k) '_' num2str(i) ' = [' num2str(k) '; 0];']);
+                        eval(['recordList_' num2str(k) '_' num2str(i) ' = [tempList recordList_' num2str(k) '_' num2str(i) '];']);
                     end
                 else % even i fix to 1
                     m_matBranch(k) = 1;
@@ -100,27 +92,17 @@ for k=1:24 % k means which element to fix (e.g. k=1 means fix y11, k=2 means fix
                             eval(['recordList_' num2str(k) '_' num2str(i) ' = [tempList recordList_' num2str(k) '_' num2str(i) '];']);
                             tempMin = tier2Power;
                             record_ObjValue = [record_ObjValue [tempMin; iter]];
-                        %{
-                        elseif tier2Power == tempMin
+                        elseif tier2Power >= tempMin
                             eval(['recordList_' num2str(k) '_' num2str(i) ' = [' num2str(k) '; 1];']);
                             eval(['recordList_' num2str(k) '_' num2str(i) ' = [tempList recordList_' num2str(k) '_' num2str(i) '];']);
-                        %}
-                        elseif tier2Power >= tempMin
-                            if numNotConvVariables < tempNotConvNum
-                                eval(['recordList_' num2str(k) '_' num2str(i) ' = [' num2str(k) '; 1];']);
-                                eval(['recordList_' num2str(k) '_' num2str(i) ' = [tempList recordList_' num2str(k) '_' num2str(i) '];']);
-                                tempNotConvNum = numNotConvVariables;
-                            elseif numNotConvVariables >= tempNotConvNum % no help for convergance, and no more better objective: Bound!!!
-                                if i==(2*prev_i) % prevent from no growing tree
-                                    eval(['recordList_' num2str(k) '_' num2str(i) ' = [' num2str(k) '; 1];']);
-                                    eval(['recordList_' num2str(k) '_' num2str(i) ' = [tempList recordList_' num2str(k) '_' num2str(i) '];']);
-                                end
-                                continue;
-                            end
+                            tempNotConvNum = numNotConvVariables;
                         end
-                    elseif feasibleFlag ~= 1 % Infeasible: Bound!!
-                            eval(['clear recordList_' num2str(k-1) '_' num2str(prev_i)]); % remember to free memory after two branches
-                            continue;
+                    elseif feasibleFlag ~= 1
+                        eval(['recordList_' num2str(k) '_' num2str(i) ' = [' num2str(k) '; 1];']);
+                        eval(['recordList_' num2str(k) '_' num2str(i) ' = [tempList recordList_' num2str(k) '_' num2str(i) '];']);
+                            
+                        eval(['clear recordList_' num2str(k-1) '_' num2str(prev_i)]); % remember to free memory after two branches
+                        continue;
                     end
                     eval(['clear recordList_' num2str(k-1) '_' num2str(prev_i)]); % remember to free memory after two branches
                 end

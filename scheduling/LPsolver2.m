@@ -1,4 +1,4 @@
-function [totalPower, convFlag, exitflag, numNotConvVariables] = LPsolver(matFix)
+function [totalPower, convFlag, exitflag, numNotConvVariables] = LPsolver2(matFix)
     % size of matFix is |S|*N
     iToWake = [];
     nToWake = [];
@@ -203,7 +203,6 @@ function [totalPower, convFlag, exitflag, numNotConvVariables] = LPsolver(matFix
     for i=1:numNodes
         for n=1:tier2NumSlot
             targetyin = [targetyin sol( (i-1)*(tier2NumSlot)+n )]; % This is yi1~yiN
-            Q(i,n) = sol( numNodes*tier2NumSlot + (i-1)*tier2NumSlot + n ); % This is qin
             Y(i,n) = sol( (i-1)*tier2NumSlot + n );
         end
         select_n = mySelect(targetyin,[1:tier2NumSlot]);
@@ -211,41 +210,55 @@ function [totalPower, convFlag, exitflag, numNotConvVariables] = LPsolver(matFix
         targetyin = [];
     end
     
-%{    
-    % Second, we find the cluster head of each members
-    m_head = 0;
-    numClusters = length(clusterStructure(:,1));
-    vec_head = [];
-    for i=1:numNodes
-        m_index = mod( find(clusterStructure == i),numClusters );
-        if m_index == 0
-            m_head = clusterStructure(numClusters,1);
-        elseif m_index < numClusters
-            m_head = clusterStructure(m_index,1);
-        else
-            error('Unable to find cluster head for a given member');
-        end
-        vec_head = [vec_head m_head];
-    end
-
-    % Third, we can calculate the power consumption of each machine based
-    % on tier-2 interference constraint
-    tempI = 0;
-    vec_I = [];
-%}
-    
     % check convergence
     if length(find(Y>0.01)) == numMembers
         convFlag = 1;
     else
         convFlag = 0;
     end
-    
     numNotConvVariables = length( find( mod(Y,1)~=0 ) );
+    
+    % solve LP to get power consumption of each nodes
+    iToWake = [];
+    nToWake = [];
+    iToSleep = [];
+    nToSleep = [];
+    for i=1:length(binaryYin(:,1))
+        wakeSlot = find(binaryYin(i,:)>0.99);
+        sleepSlot = find(binaryYin(i,:)<0.01);
+        wakeTimes = length(wakeSlot);
+        sleepTimes = length(sleepSlot);
+        if wakeTimes > 0
+            for j=1:wakeTimes
+                iToWake = [iToWake i];
+                nToWake = [nToWake wakeSlot(j)];
+            end
+        end
+        if sleepTimes > 0
+            for j=1:sleepTimes
+                iToSleep = [iToSleep i];
+                nToSleep = [nToSleep sleepSlot(j)];
+            end
+        end
+    end
+    for i=1:length(iToWake)
+        Aeq( ((iToWake(i)-1)*tier2NumSlot + nToWake(i)),((iToWake(i)-1)*tier2NumSlot + nToWake(i)) ) = 1;
+        beq((iToWake(i)-1)*tier2NumSlot + nToWake(i)) = 1;
+    end
+    for i=1:length(iToSleep)
+        Aeq( ((iToSleep(i)-1)*tier2NumSlot + nToSleep(i)),((iToSleep(i)-1)*tier2NumSlot + nToSleep(i)) ) = 1;
+        beq((iToSleep(i)-1)*tier2NumSlot + nToSleep(i)) = 0;
+    end
+    
+    sol2 = linprog(objective,matConstraints,vecConstraints,Aeq,beq,lb,ub,[],options);
+    for i=1:numNodes
+        for n=1:tier2NumSlot
+            Q(i,n) = sol2( numNodes*tier2NumSlot + (i-1)*tier2NumSlot + n ); % This is qin
+        end
+    end
     vec_power = [];
     for i=1:numNodes
         vec_power = [vec_power sum(Q(i,:).*Y(i,:))];
     end
-    totalPower = sum(vec_power)*numNotConvVariables; % penality!!!!!;
-    
+    totalPower = sum(vec_power);
 end
