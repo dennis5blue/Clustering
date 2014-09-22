@@ -38,7 +38,7 @@ for ii=1:3
     density = totalNodes / (pi*(radius/densityScale)^2) ;
 
     hold on;
-    circle(0,0,radius);
+    circle(-10,55,radius/1.7);
 
     B = find(sum(clusterStru));
     supSet = setdiff(B, headList);
@@ -47,7 +47,7 @@ for ii=1:3
     
     inactiveSet = intersect(supSet, nodeIdx(matSolution(ii,:) == 0));
     activeSet = nodeIdx(matSolution(ii,:) == 1);
-    circle(0,0,radius);
+    circle(-10,55,radius/1.7);
     clusterSize=zeros(1,maxChNum);
 
     firstTierX(1)=0;
@@ -170,12 +170,13 @@ plot(0,0,'^', ...
     'LineStyle','none'); %Base Station
 
 %format
-axis([-(radius+10) (radius+10) -(radius+10) (radius+10)]);
+%axis([-(radius/1.7+80) (radius/1.7+80) -(radius/1.7+150) (radius/1.7+80)]);
+axis([-110 90 -50 150]);
 %Write Interpretation
 
 str = sprintf('Machines=%d, \\eta=0.48',totalNodes);
 
-title('Machines=50, \eta=0.477');
+%title('Machines=50, \eta=0.477');
 %plot X-Y Axis
 temp = -(radius+10):0.01:(radius+10);
 %plot (temp,zeros(1,length(temp)),'k');     

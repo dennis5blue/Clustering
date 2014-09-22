@@ -10,11 +10,11 @@ figure;
 %dpath = ['data/4b2DC_m13.txt';'data/2i2MC_m9.txt ';'data/SKMDC_m11.txt';'data/SKMMC_m11.txt'];
 %strtitle=['Two-Tier DC';'Two-Tier MC';'K-Means  DC';'K-Means  MC'];
 
-path = {'data/CS_baseline_90000.0_1.out'};
+path = {'./data/CS_test_Baseline_24.out'};
 
 strtitle2={'SA'};
-mapString = ['../../runSimulation/runTest/testImageClustering/paper720_30cam_pos.txt'];
-vecDirection = dlmread('direction.out');
+mapString = ['./data/24cam_r500_map.out'];
+vecDirection = dlmread('./data/24cam_r500_dir.out');
 %path=cellstr(dpath);
 %strtitle2=cellstr(strtitle);
 for ii=1:length(path)
@@ -32,12 +32,13 @@ powerBound = 1e-6;
     (path{ii},totalNodes);
 headName=headList;
 
+radius = 150;
 densityScale = 1000;%km square
 density = totalNodes / (pi*(radius/densityScale)^2) ;
 %Aboves are basic parameter input
 
 hold on;
-circle(0,0,radius);
+circle(-10,55,radius/1.7);
 
 %plot (x,y,'o','MarkerSize',4);%all nodes
 
@@ -48,7 +49,7 @@ supSet = setdiff(B, headList);
 Binary_Unsupset=ones(1,totalNodes)-sum(clusterStru);
 index_unsupset=find(Binary_Unsupset);
 
-circle(0,0,radius);
+circle(-10,55,radius/1.7);
 %grid on;
 clusterSize=zeros(1,maxChNum);
 
@@ -66,14 +67,14 @@ for i=1:maxChNum
   if clusterStru(i,j)==1
      X(1) = x(headName(i));
      Y(1) = y(headName(i));
-     X(2) = x(j)
-     Y(2) = y(j)
-     theta = vecDirection(j)+pi;
+     X(2) = x(j);
+     Y(2) = y(j);
+     theta = vecDirection(j)+pi/2;
      r = 30;
      u = x(j) + r * cos(theta); % convert polar (theta,r) to cartesian
      v = y(j) + r * sin(theta);
      
-     arrow([x(j) y(j)],[u v],'BaseAngle',30);
+     arrow([x(j) y(j)],[u v],'BaseAngle',30,'length',15,'width',0.4);
      hLine = plot(X,Y,'k:','Color',[0.001 0.001 0.001],'LineWidth',1);
      set(get(get(hLine,'Annotation'),'LegendInformation'),...
     'IconDisplayStyle','off');
@@ -131,14 +132,15 @@ dd = plot(0,0,'^','MarkerSize',10,'MarkerFaceColor','r','MarkerEdgeColor','k','D
 
 
 %format
-axis([-(radius+10) (radius+10) -(radius+10) (radius+10)]);
+%axis([-(radius+10) (radius+10) -(radius+10) (radius+10)]);
+axis([-110 90 -50 150]);
 %Write Interpretation
 
 %str = sprintf('UL Structure(N%d-HN%d-Served:%d-RT%.3f(bps/Hz)-Density(%.3f/km^2)-PowerMax %.3f(W/Hz). SAloop %d in %.2f seconds)',totalNodes, maxChNum,payoffs, C2W, density, powerBound,SAFac,computingTime);
 strtitle2{ii};
 str = sprintf('Machines=50, \lambda=0.8 \eta=0.477:%s ',strtitle2{ii});
 
-title('Cameras=24; R=150');
+title('Cameras=24');
 %plot X-Y Axis
 temp = -(radius+10):0.01:(radius+10);
 %plot (temp,zeros(1,length(temp)),'k');     
@@ -155,7 +157,7 @@ hold off;
 legend('show','Orientation','horizontal');legend([aa bb cc dd]);
 legend1 = legend('show');
 set(legend1,...
-    'Position',[0.60590909090909 0.314000000000001 0.164545454545455 0.1025]);
+    'Position',[0.25590909090909 0.314000000000001 0.194545454545455 0.1025]);
 
 
 

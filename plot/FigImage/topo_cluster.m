@@ -38,7 +38,7 @@ density = totalNodes / (pi*(radius/densityScale)^2) ;
 %Aboves are basic parameter input
 
 hold on;
-circle(0,0,radius);
+circle(-10,55,radius/1.7);
 
 %plot (x,y,'o','MarkerSize',4);%all nodes
 
@@ -49,7 +49,7 @@ supSet = setdiff(B, headList);
 Binary_Unsupset=ones(1,totalNodes)-sum(clusterStru);
 index_unsupset=find(Binary_Unsupset);
 
-circle(0,0,radius);
+circle(-10,55,radius/1.7);
 %grid on;
 clusterSize=zeros(1,maxChNum);
 
@@ -138,14 +138,15 @@ arrow([x y], [u v])
 %}
 
 %format
-axis([-(radius+10) (radius+10) -(radius+10) (radius+10)]);
+%axis([-(radius+10) (radius+10) -(radius+10) (radius+10)]);
+axis([-110 90 -50 150]);
 %Write Interpretation
 
 %str = sprintf('UL Structure(N%d-HN%d-Served:%d-RT%.3f(bps/Hz)-Density(%.3f/km^2)-PowerMax %.3f(W/Hz). SAloop %d in %.2f seconds)',totalNodes, maxChNum,payoffs, C2W, density, powerBound,SAFac,computingTime);
 strtitle2{ii};
 str = sprintf('Machines=50, \lambda=0.8 \eta=0.477:%s ',strtitle2{ii});
 
-title('Cameras=24; R=150');
+title('Cameras=24');
 %plot X-Y Axis
 temp = -(radius+10):0.01:(radius+10);
 %plot (temp,zeros(1,length(temp)),'k');     
@@ -164,6 +165,6 @@ legend('show','Orientation','horizontal'); legend([aa bb cc dd]);
 legend('show','Orientation','horizontal');legend([aa bb cc dd]);
 legend1 = legend('show');
 set(legend1,...
-    'Position',[0.60590909090909 0.314000000000001 0.164545454545455 0.1025]);
+    'Position',[0.25590909090909 0.314000000000001 0.194545454545455 0.1025]);
 end
 
