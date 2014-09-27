@@ -40,23 +40,26 @@ end
 
 % max SNR scheduling
 imageSolution = zeros(tier2NumSlot, numNodes);
+m_vecSNR = [];
+m_vecAllMembers = [];
 for h=1:length(clusterHead)
     m_head = clusterStructure(h,1);
     m_vecMembers = clusterStructure(h,2:length(clusterStructure(h,:)));
-    m_vecSNR = [];
+    %m_vecSNR = [];
     for i=1:length(m_vecMembers)
         m_vecSNR = [m_vecSNR matGij(m_vecMembers(i),m_head)];
-    end
-    [SNRv SNRi] = sort(m_vecSNR, 'descend');
-    for n=1:length(SNRi)
-        imageSolution(n,m_vecMembers( SNRi(n) )) = 1;
+        m_vecAllMembers = [m_vecAllMembers m_vecMembers(i)];
     end
 end
+[SNRv SNRi] = sort(m_vecSNR, 'descend');
+for n=1:length(SNRi)
+    m_vecAllMembers( SNRi(n) )
+end
 
-%imageSolution = [0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 1 1 0 0 0; ... 
-%                 0 0 0 0 0 0 0 0 0 0 1 0 1 0 0 0 0 0 1 1; ...
-%                 0 0 1 1 0 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0; ...   
-%                 1 0 0 0 1 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0];
+imageSolution = [0 0 0 0 0 0 0 0 0 0 0 1 0 1 0 1 1 0 0 0; ... 
+                 0 0 0 0 0 0 0 0 0 0 1 0 1 0 0 0 0 0 1 1; ...
+                 0 0 1 1 0 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0; ...   
+                 1 0 0 0 1 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0];
 
 matFix = imageSolution';
 % size of matFix is |S|*N

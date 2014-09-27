@@ -72,13 +72,27 @@ for i=1:maxChNum
      X(2) = x(j);
      Y(2) = y(j);
      theta = vecDirection(j)+pi/2;
-     r = 50; % tune this will make arrow looks defferent
+     r = 20; % tune this will make arrow looks defferent
      u = x(j) + r * cos(theta); % convert polar (theta,r) to cartesian
      v = y(j) + r * sin(theta);
      arrow([x(j) y(j)],[u v],'BaseAngle',30,'length',15,'width',0.4);
-     hLine = plot(X,Y,'k:','Color',[0.001 0.001 0.001],'LineWidth',1);
-     set(get(get(hLine,'Annotation'),'LegendInformation'),...
-    'IconDisplayStyle','off');
+     if i==1
+         hLine = plot(X,Y,'k:','Color','r','LineWidth',3);
+         set(get(get(hLine,'Annotation'),'LegendInformation'),...
+         'IconDisplayStyle','off');
+     elseif i==2
+         hLine = plot(X,Y,'k:','Color','g','LineWidth',3);
+         set(get(get(hLine,'Annotation'),'LegendInformation'),...
+         'IconDisplayStyle','off');
+     elseif i==3
+         hLine = plot(X,Y,'k:','Color','b','LineWidth',3);
+         set(get(get(hLine,'Annotation'),'LegendInformation'),...
+         'IconDisplayStyle','off');
+     elseif i==4
+         hLine = plot(X,Y,'k:','Color','c','LineWidth',3);
+         set(get(get(hLine,'Annotation'),'LegendInformation'),...
+         'IconDisplayStyle','off');
+     end
      clusterSize(i) = clusterSize(i)+1;
      
      %str = sprintf('%d',j);
