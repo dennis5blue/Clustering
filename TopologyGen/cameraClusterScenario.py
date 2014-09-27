@@ -54,10 +54,10 @@ scene.objects.active = lamp_object
 
 #add camera (random position and sensing direction)
 #city radius = 500m
-for cam in range(20):
-	cameraPos = (random.uniform(-2.5,2.5), random.uniform(-2.5,2.5), 0.1)
-	cameraRotation = (math.pi*90.0/180, math.pi*0.0/180, -math.pi*random.randrange(0,360,10)/180)
-	bpy.ops.object.camera_add(view_align=False, enter_editmode=False, location=cameraPos, rotation=cameraRotation);
+#for cam in range(20):
+	#cameraPos = (random.uniform(-2.5,2.5), random.uniform(-2.5,2.5), 0.1)
+	#cameraRotation = (math.pi*90.0/180, math.pi*0.0/180, -math.pi*random.randrange(0,360,10)/180)
+	#bpy.ops.object.camera_add(view_align=False, enter_editmode=False, location=cameraPos, rotation=cameraRotation);
 
 
 bpy.data.scenes["Scene"].render.resolution_x = 1280*2;

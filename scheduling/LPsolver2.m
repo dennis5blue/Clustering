@@ -1,4 +1,5 @@
 function [totalPower, convFlag, exitflag, numNotConvVariables] = LPsolver2(matFix)
+    %matFix = zeros(20,4);
     % size of matFix is |S|*N
     iToWake = [];
     nToWake = [];
@@ -23,10 +24,10 @@ function [totalPower, convFlag, exitflag, numNotConvVariables] = LPsolver2(matFi
         end
     end
 
-    map = dlmread('../sourceData/24cam_r500_map.out');
-    idtEntropy = dlmread('../sourceData/24cam_r500_idt.out');
-    corrEntropy = dlmread('../sourceData/24cam_r500_corr.out');
-    CSRead = dlmread('../sourceData/CS_test_CSA_24.out');
+    map = dlmread('../sourceData/20cam_r500_map.out');
+    idtEntropy = dlmread('../sourceData/20cam_r500_idt.out');
+    corrEntropy = dlmread('../sourceData/20cam_r500_corr.out');
+    CSRead = dlmread('../sourceData/CS_test_CSA_20_v4.out');
     clusterHead = CSRead( 1,find(CSRead(1,:)>0) );
     clusterStructure = CSRead(2:length(CSRead(:,1)),:);
 
@@ -38,7 +39,7 @@ function [totalPower, convFlag, exitflag, numNotConvVariables] = LPsolver2(matFi
     BSy = 0;
     N0 = 1e-16;
     tau = 2000; % Tx time per slot
-    tier2NumSlot = 5;
+    tier2NumSlot = 4;
     bandwidthhz = 180000; %kHz
     Gamma = 1;
     Phi = 0;

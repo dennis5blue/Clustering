@@ -1,11 +1,11 @@
 clc;
 clear;
-map = dlmread('../sourceData/24cam_r500_map.out');
-idtEntropy = dlmread('../sourceData/24cam_r500_idt.out');
-corrEntropy = dlmread('../sourceData/24cam_r500_corr.out');
-CSRead = dlmread('../sourceData/CS_test_CSA_24.out');
+map = dlmread('../sourceData/20cam_r500_map.out');
+idtEntropy = dlmread('../sourceData/20cam_r500_idt.out');
+corrEntropy = dlmread('../sourceData/20cam_r500_corr.out');
+CSRead = dlmread('../sourceData/CS_test_CSA_20_v4.out');
 clusterHead = CSRead( 1,find(CSRead(1,:)>0) );
-clusterStructure = CSRead(2:length(CSRead(:,1)),:);
+clusterStructure = CSRead(2:length(CSRead(:,1)),:); % remember to pust cluster head at this 1st position
 
 % Parameter settings
 numNodes = map(1,1);
@@ -15,10 +15,10 @@ BSx = 0;
 BSy = 0;
 N0 = 1e-16;
 tau = 2000; % Tx time per slot
-tier2NumSlot = 5;
+tier2NumSlot = 4;
 bandwidthhz = 180000; %kHz
 Gamma = 1;
-Phi = 100;
+Phi = 1;
 maxPower = 1;
 clusterMembers = [1:numNodes];
 for i=1:length(clusterHead)
@@ -89,7 +89,8 @@ for i=1:length(clusterMembers)
     m_vecInterNode = [];
     for j=1:length(clusterHead)
         if (find(clusterStructure(j,:)==m_node))
-            m_head = clusterHead(j);
+            m_head = clusterStructure(j,1);
+            %[m_node m_head]
         else
             m_vecInterNode = [m_vecInterNode clusterStructure( j,2:length(find(clusterStructure(j,:)>0)))];
         end
@@ -99,6 +100,7 @@ for i=1:length(clusterMembers)
         matConstraints(conIndex, (numSV/2 + (m_node-1)*tier2NumSlot +n) ) = -matGij(m_node,m_head); %q_in
         for k=1:length(m_vecInterNode)
             m_interNode = m_vecInterNode(k);
+            %[m_node m_head m_interNode]
             matConstraints(conIndex, (numSV/2 + (m_interNode-1)*tier2NumSlot +n) ) = ...
                 vecFi(m_node)*Gamma*matGij(m_interNode,m_head); % q_kn
         end
@@ -127,9 +129,9 @@ end
 for i=1:length(clusterMembers)
     m_node = clusterMembers(i);
     for n=1:tier2NumSlot
-        matConstraints(conIndex, ( (m_node-1)*tier2NumSlot + n ))=1;
+        matConstraints(conIndex, ( (m_node-1)*tier2NumSlot + n ))=0;
     end
-    vecConstraints(conIndex) = 1;
+    vecConstraints(conIndex) = 0;
     conIndex = conIndex + 1;
 end
 

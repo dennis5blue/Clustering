@@ -7,16 +7,10 @@ def channelGain(x, y):
     return g
 
 def main(argv=None):
-	if sys.argv[1].startswith('--'):
-		option = sys.argv[1][2:]
-	if option == "version":
-		indepFilePath = "../TestSequences/test"+sys.argv[2]+"_correlation/test"+sys.argv[2]+"__phase_0.out"
-		corrFilePath = "../TestSequences/test"+sys.argv[2]+"_correlation/test"+sys.argv[2]+"__phase_1_camera_"
-		saveFilePath = "../TestSequences/test"+sys.argv[2]+"_correlation/"
-		posFilePath = "../TestSequences/test"+sys.argv[2]+"_png/log.txt"
-	if option == "help":
-		print "Usage: --version i (parse for the test i data)"
-		sys.exit()
+	indepFilePath = "../sourceData/image_correlation/image_phase_0.out"
+	corrFilePath = "../sourceData/image_correlation/image_phase_1_camera_"
+	saveFilePath = "../sourceData/image_correlation/"
+	posFilePath = "../sourceData/image_png/log.txt"
 
 	W = 180 # kHz bandwidth
 	P = 10  # dbm power
@@ -29,7 +23,7 @@ def main(argv=None):
 	for line in lines:
 		tokens = re.split(' |\[',line)
 		tokens = filter(None,tokens);
-		indepRate.write(str(float(tokens[5]))+" "+str(int(tokens[7]))+'\n') #tokens[5] is Rate, tokens[7] is number of Bytes when indep encoding
+		indepRate.write(str(int(tokens[7]))+'\n') #tokens[5] is Rate, tokens[7] is number of Bytes when indep encoding
 
 	lines = ifPosition.readlines()
 	for line in lines:
@@ -40,7 +34,7 @@ def main(argv=None):
 			yy = float(tokens[2])*100
 			ofPos.write(str(xx)+' '+str(yy)+'\n')
 
-	for camera in range(30):
+	for camera in range(20):
 		corrCompression = open(corrFilePath+str(camera)+".out","r")
 		corrMatrix = open(saveFilePath+"corrMatrix","a+")
 		lines = corrCompression.readlines()

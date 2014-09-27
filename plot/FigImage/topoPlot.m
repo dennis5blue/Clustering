@@ -11,21 +11,21 @@ figure;
 %strtitle=['Two-Tier DC';'Two-Tier MC';'K-Means  DC';'K-Means  MC'];
 
 
-CSPath = ['./data/CS_test_CSA_24.out'];
-SchedulePath = ['./data/imageSolution_24cam.out'];
-mapString = ['./data/24cam_r500_map.out'];
+CSPath = ['./data/CS_test_CSA_20_v4.out'];
+SchedulePath = ['./data/imageSolution_20cam_v4.out'];
+mapString = ['./data/20cam_r500_map.out'];
 matSolution = dlmread(SchedulePath);
-vecDirection = dlmread('./data/24cam_r500_dir.out');
+vecDirection = dlmread('./data/20cam_r500_dir.out');
 
 [totalNodes radius x y Gij Gib]= parse_Map_v1(mapString);
-radius = 150;
+radius = 500;
 [ maxChNum powerMax C2WT payoffs SAFac TimeMs1st TimeMs2nd EnergyJ1st ...
     EnergyJ2nd clusterStru headList TxPower  ] = parse_Stru_v2 ...
     (CSPath,totalNodes);
 
 nodeIdx = 1:totalNodes;
 
-for ii=1:3
+for ii=1:4
 % 
     hFig = figure(ii);
     set(hFig, 'Position', [1 1 550 500 ]);
@@ -38,7 +38,8 @@ for ii=1:3
     density = totalNodes / (pi*(radius/densityScale)^2) ;
 
     hold on;
-    circle(-10,55,radius/1.7);
+    %circle(-10,55,radius/1.7);
+    circle(0,0,radius/1.2);
 
     B = find(sum(clusterStru));
     supSet = setdiff(B, headList);
@@ -47,7 +48,8 @@ for ii=1:3
     
     inactiveSet = intersect(supSet, nodeIdx(matSolution(ii,:) == 0));
     activeSet = nodeIdx(matSolution(ii,:) == 1);
-    circle(-10,55,radius/1.7);
+    %circle(-10,55,radius/1.7);
+    circle(0,0,radius/1.2);
     clusterSize=zeros(1,maxChNum);
 
     firstTierX(1)=0;
@@ -68,7 +70,7 @@ for ii=1:3
                 X(2) = x(j);
                 Y(2) = y(j);
                 theta = vecDirection(j)+pi/2;
-                r = 30;
+                r = 50;
                 u = x(j) + r * cos(theta); % convert polar (theta,r) to cartesian
                 v = y(j) + r * sin(theta);
                 if matSolution(ii,j) == 1
@@ -171,7 +173,8 @@ plot(0,0,'^', ...
 
 %format
 %axis([-(radius/1.7+80) (radius/1.7+80) -(radius/1.7+150) (radius/1.7+80)]);
-axis([-110 90 -50 150]);
+%axis([-110 90 -50 150]);
+axis([-(radius/1.2) (radius/1.2) -(radius/1.2) (radius/1.2)]);
 %Write Interpretation
 
 str = sprintf('Machines=%d, \\eta=0.48',totalNodes);

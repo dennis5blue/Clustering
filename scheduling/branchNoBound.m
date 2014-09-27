@@ -1,11 +1,11 @@
 clc;
 clear;
 % Use matlan bintprog: we can get tier-2 power = 1.9903e+04
-numNodes = 24;
-tier2NumSlot = 5;
+numNodes = 20;
+tier2NumSlot = 4;
 numClusters = 4;
 
-matBranch = -1*ones(24,5); % use for fixing selection variables during the branching process 
+matBranch = -1*ones(numNodes,tier2NumSlot); % use for fixing selection variables during the branching process 
 convergeFlag = 0; % convergance happens when all elements in Y is binary
 tempMin = inf; % record the minimum objective value obtained so far
 tempNotConvNum = numNodes*tier2NumSlot;
