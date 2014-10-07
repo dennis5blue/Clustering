@@ -4,7 +4,22 @@ clc;
 map = dlmread('../sourceData/20cam_r500_map.out');
 idtEntropy = dlmread('../sourceData/20cam_r500_idt.out');
 corrEntropy = dlmread('../sourceData/20cam_r500_corr.out');
-algorithmFlag = 3;
+algorithmFlag = 4;
+
+% Parameter settings
+numNodes = 20;
+radius = 500;
+BSx = 0;
+BSy = 0;
+N0 = 1e-14;
+totalTime = 10000; % 10000ms
+tier1Time = 9000; % 5000ms~9000ms
+tier2NumSlot = 4;
+tau = (totalTime - tier1Time)/tier2NumSlot; % Tier-2 time slot (2000ms)
+bandwidthhz = 180; %kHz
+Gamma = 1;
+%Phi = 10000;
+maxPower = 1; % 1
 
 % This is CSA (use v4)
 if algorithmFlag == 1
@@ -31,22 +46,14 @@ elseif algorithmFlag == 3
                         15 1  2  5  10 11 16 18 19;...
                         13 7  0  0  0  0  0  0  0;...
                         12 3  6  8  9  17 20 0  0]; % The order of head should match clusterHead
+% This is direct access
+elseif algorithmFlag == 4
+    display('Direct access');
+    clusterHead = [1:20];
+    clusterStructure = [1;2;3;4;5;6;7;8;9;10;11;12;13;14;15;16;17;18;19;20];
+    tier1Time = totalTime;
 end
 
-% Parameter settings
-numNodes = 20;
-radius = 500;
-BSx = 0;
-BSy = 0;
-N0 = 1e-14;
-totalTime = 10000; % 10000ms
-tier1Time = 9000; % 5000ms~9000ms
-tier2NumSlot = 4;
-tau = (totalTime - tier1Time)/tier2NumSlot; % Tier-2 time slot (2000ms)
-bandwidthhz = 180; %kHz
-Gamma = 1;
-%Phi = 10000;
-maxPower = 1; % 1
 numHeads = length(clusterHead);
 
 % Calculate channel gain
