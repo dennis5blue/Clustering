@@ -1,6 +1,6 @@
 clear;
 clc;
-algorithmFlag = 4;
+algorithmFlag = 1;
 
 if algorithmFlag == 1
     display('Scheduling Algorithm: branch-and-bound');
@@ -48,7 +48,7 @@ radius = map(1,2);
 BSx = 0;
 BSy = 0;
 N0 = 1e-14;
-tau = 5000; % Tx time per slot (2000ms)
+tau = 400; % Tx time per slot (2000ms)
 tier2NumSlot = 4;
 bandwidthhz = 180; %kHz
 Gamma = 1;
