@@ -1,6 +1,6 @@
 clear;
 clc;
-algorithmFlag = 3;
+algorithmFlag = 1;
 map = dlmread('../sourceData/20cam_r500_map.out');
 idtEntropy = dlmread('../sourceData/20cam_r500_idt.out');
 corrEntropy = dlmread('../sourceData/20cam_r500_corr.out');
@@ -13,8 +13,8 @@ radius = map(1,2);
 BSx = 0;
 BSy = 0;
 N0 = 1e-14;
-totalTime = 10000; % 10000ms
-tier1Time = 9000; % 5000ms~9000ms
+totalTime = 1000; % 10000ms
+tier1Time = 900; % 5000ms~9000ms
 tier2NumSlot = 4;
 tau = (totalTime - tier1Time)/tier2NumSlot; % Tier-2 reosurce (2000ms)
 bandwidthhz = 180; %kHz

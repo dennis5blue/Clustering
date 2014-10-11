@@ -4,19 +4,20 @@ clc;
 map = dlmread('../sourceData/20cam_r500_map.out');
 idtEntropy = dlmread('../sourceData/20cam_r500_idt.out');
 corrEntropy = dlmread('../sourceData/20cam_r500_corr.out');
-algorithmFlag = 4;
+algorithmFlag = 2;
 
 % Parameter settings
 numNodes = 20;
-radius = 500;
+numClusters = 4;
+radius = 900;
 BSx = 0;
 BSy = 0;
-N0 = 1e-14;
-totalTime = 10000; % 10000ms
-tier1Time = 9000; % 5000ms~9000ms
+N0 = 1e-16; %1e-14
+totalTime = 1000; % 10000ms
+tier1Time = 900/numClusters; % 5000ms~9000ms
 tier2NumSlot = 4;
 tau = (totalTime - tier1Time)/tier2NumSlot; % Tier-2 time slot (2000ms)
-bandwidthhz = 180; %kHz
+bandwidthhz = 180000; %kHz
 Gamma = 1;
 %Phi = 10000;
 maxPower = 1; % 1

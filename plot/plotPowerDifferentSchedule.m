@@ -10,26 +10,25 @@ greedyPhy =  [1.5268e-05 1.3466e-05 1.2915e-05 1.2648e-05 1.2491e-05];
 tier2Time = [10 20 30 40 50]; %s
 %}
 
-%N0 = 1e-13, tau = 100~500
-BB =         [0.0972 0.0705 0.0328 0.0276 0.0428];
-maxSNR =     [0.9084 0.0044 0.0049 ];
-maxSumRate = [];
-greedyPhy =  [];
+%N0 = 1e-16, tau = 50~100
+BB =        fliplr( [5.1921 3.6745 3.5853 3.5729 3.5679] );
+maxSNR =    fliplr( [19.6194 9.3930 8.9801 8.9237 8.9013] );
+maxEntropy = fliplr( [inf 8.9037 8.1554 8.0616 8.0248] );
+greedyPhy = fliplr( [6.8227 3.8674 3.7426 3.7255 3.7187] );
 
-tier2Time = [1 2 3 4 5]; %s
+tier2Time = fliplr( [1 10 40 70 100] ); %ms
 
 %plot(xaxis, baselineClusterTier1Power, 'x-.','LineWidth',2,'Color','b','DisplayName',str_baseline ); hold on;
-
-plot(tier2Time,BB,'x-.','LineWidth',2,'DisplayName','Branch and bound','Color','r','MarkerSize',10); hold on;
 plot(tier2Time,maxSNR,'^-.','LineWidth',2,'DisplayName','Max SNR','Color','g','MarkerSize',10); hold on;
-plot(tier2Time,maxSumRate,'*-.','LineWidth',2,'DisplayName','Max sum rate','Color','b','MarkerSize',10); hold on;
+plot(tier2Time,maxEntropy,'*-.','LineWidth',2,'DisplayName','Max entropy','Color','b','MarkerSize',10); hold on;
 plot(tier2Time,greedyPhy,'o-.','LineWidth',2,'DisplayName','Greedy physical','Color','c','MarkerSize',10);
+plot(tier2Time,BB,'x-.','LineWidth',2,'DisplayName','Branch and bound','Color','r','MarkerSize',10); hold on;
 %marker1 = scatter(xMarker,yMarker,'ro');
 %set(marker1, 'sizedata', 50);
 %set(get(get(marker1,'Annotation'),'LegendInformation'),'IconDisplayStyle','off');
-
-ylabel('Tier-2 power (Watt)');
-xlabel('Time slot duration (s)');
+set(gca,'XDir','reverse');
+ylabel('Tier-2 total power (Watt)');
+xlabel('Tier-2 time slot duration (ms)');
 legend('show','location','best');
 %axis([0 5 -inf inf]);
 grid on;
