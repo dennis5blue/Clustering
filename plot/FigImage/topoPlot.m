@@ -193,7 +193,7 @@ set(gca,'YTickLabel',['']);
 % xlabel({'x-axis(m)'});
 % ylabel('y-axis(m)');
 hold off;
-legend1 = legend('show','Orientation','horizontal');
-set(legend1,...
-    'Position',[0.23590909090909 0.854000000000001 0.564545454545455 0.0025]);
+%legend1 = legend('show','Orientation','horizontal');
+%set(legend1,...
+%    'Position',[0.23590909090909 0.854000000000001 0.564545454545455 0.0025]);
 end

@@ -15,13 +15,14 @@ greedyPhy =  [2.2870 1.3287 0.0926 0.0103];
 %maxEntropy = sort(maxEntropy,'descend');
 %greedyPhy = sort(greedyPhy,'descend');
 
-slot = [1 2 3 4]; 
+slot = [1 2 3]; 
 
 tier2Power = [];
 for i=1:length(slot)
     tier2Power = [tier2Power; maxSNR(i) maxEntropy(i) greedyPhy(i) BB(i)];
 end
 
+subplot(2,1,1);
 Obar = bar(slot,tier2Power,'hist');
 set(Obar(1),'FaceColor',[1 0.35 0.35]);
 set(Obar(2),'FaceColor',[0 1 0.7]);
@@ -30,8 +31,8 @@ set(Obar(4),'FaceColor',[0 1 1]);
 
 set(gca,'xticklabel');
 xlabel(gca,'Slot index');
-ylabel(gca,'Tier 2 Power (Watt)');
+ylabel(gca,'Tier-2 Power (Watt)');
 %title('|S|=24, |H|=4, T+N*\tau = 100(s)');
-legend('Max SNR','Max entropy','Greedy physical','Branch and bound','location','NorthEast');
+legend('Max SNR','Max entropy','Greedy physical','Branch and bound','location','Best');
 grid on;
 hold off;

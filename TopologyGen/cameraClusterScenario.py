@@ -54,10 +54,10 @@ scene.objects.active = lamp_object
 
 #add camera (random position and sensing direction)
 #city radius = 500m
-#for cam in range(20):
-	#cameraPos = (random.uniform(-2.5,2.5), random.uniform(-2.5,2.5), 0.1)
-	#cameraRotation = (math.pi*90.0/180, math.pi*0.0/180, -math.pi*random.randrange(0,360,10)/180)
-	#bpy.ops.object.camera_add(view_align=False, enter_editmode=False, location=cameraPos, rotation=cameraRotation);
+for cam in range(30):
+	cameraPos = (random.uniform(-5.0,5.0), random.uniform(-5.0,0.0), 0.15)
+	cameraRotation = (math.pi*90.0/180, math.pi*0.0/180, -math.pi*random.randrange(0,360,10)/180)
+	bpy.ops.object.camera_add(view_align=False, enter_editmode=False, location=cameraPos, rotation=cameraRotation);
 
 
 bpy.data.scenes["Scene"].render.resolution_x = 1280*2;
@@ -76,7 +76,7 @@ print('\nPrint Scenes...');
 sceneKey = bpy.data.scenes.keys()[0]; 
 print('Using Scene['  + sceneKey + ']');
 c=0;
-logFileName="/home/dennisyu/Documents/Clustering/sourceData/image_png/log.txt"
+logFileName="/home/dennisyu/Documents/Clustering/sourceData/image_paper/log.txt"
 logFile=open(logFileName,"w+")
 for obj in bpy.data.objects: 
 # Find cameras that match cameraNames 
@@ -92,7 +92,7 @@ for obj in bpy.data.objects:
         # Render Scene and store the scene 
         bpy.ops.render.render( write_still=True ); 
         RR = "Render Result";
-        bpy.data.images[RR].save_render("/home/dennisyu/Documents/Clustering/sourceData/image_png/camera_"+str(c)+".png");
+        bpy.data.images[RR].save_render("/home/dennisyu/Documents/Clustering/sourceData/image_paper/camera_"+str(c)+".png");
         c = c + 1; 
 
 logFile.close()

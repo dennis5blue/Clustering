@@ -1,6 +1,6 @@
 clear;
 clc;
-algorithmFlag = 4;
+algorithmFlag = 1;
 tau = 100; % Tx time per slot (100ms)
 %tau = (1000 - 900)/4;
 slotStart = 1;

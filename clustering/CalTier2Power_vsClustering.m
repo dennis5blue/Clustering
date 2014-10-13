@@ -14,7 +14,7 @@ BSx = 0;
 BSy = 0;
 N0 = 1e-14;
 totalTime = 1000; % 10000ms
-tier1Time = 900; % 5000ms~9000ms
+tier1Time = 500; % 5000ms~9000ms
 tier2NumSlot = 4;
 tau = (totalTime - tier1Time)/tier2NumSlot; % Tier-2 reosurce (2000ms)
 bandwidthhz = 180; %kHz
@@ -59,8 +59,7 @@ elseif algorithmFlag == 2
     clusterStructure = [8  3  6  9  17 0  0  0  0; ...
                         2  1  5  10 11 15 16 18 19; ...
                         14 4  13 0  0  0  0  0  0; ...
-                        7  12 20 0  0  0  0  0  0]; % The order of head should match clusterHead
-            
+                        12 7  20 0  0  0  0  0  0]; % The order of head should match clusterHead
 % This is DMCP
 elseif algorithmFlag == 3
     display('Clustering Algorithm: DMCP');
