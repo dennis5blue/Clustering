@@ -10,13 +10,16 @@ figure;
 %dpath = ['data/4b2DC_m13.txt';'data/2i2MC_m9.txt ';'data/SKMDC_m11.txt';'data/SKMMC_m11.txt'];
 %strtitle=['Two-Tier DC';'Two-Tier MC';'K-Means  DC';'K-Means  MC'];
 
-path = {'./data/CS_test_CSA_20_v4.out'};
+%path = {'./data/CS_test_CSA_20_v4.out'};
+path = {'./data/CS_test_CSA_10.out'};
 
 strtitle2={'SA'};
-mapString = ['./data/20cam_r500_map.out'];
+%mapString = ['./data/20cam_r500_map.out'];
+mapString = ['./data/10cam_r500_map.out'];
 %path=cellstr(dpath);
 %strtitle2=cellstr(strtitle);
-vecDirection = dlmread('./data/20cam_r500_dir.out');
+%vecDirection = dlmread('./data/20cam_r500_dir.out');
+vecDirection = dlmread('./data/10cam_r500_dir.out');
 for ii=1:length(path)
 % 
 hFig = figure(ii);

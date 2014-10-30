@@ -15,7 +15,7 @@ greedyPhy =  [2.2870 1.3287 0.0926 0.0103];
 %maxEntropy = sort(maxEntropy,'descend');
 %greedyPhy = sort(greedyPhy,'descend');
 
-slot = [1 2 3]; 
+slot = [1 2 3 4]; 
 
 tier2Power = [];
 for i=1:length(slot)
