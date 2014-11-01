@@ -13,6 +13,8 @@ numMembers = numNodes - length(clusterHead);
 numHeads = length(clusterHead);
 tier2NumSlot = 4;
 powerMax = 1000; %mW
+Phi = 0;
+magicValue = 1e-07;
 
 %Initial solution
 Y = zeros(numNodes,tier2NumSlot);
@@ -22,5 +24,12 @@ for i=1:numHeads
     end
 end
 
-[Q] = LPsolver(Y,map,idtEntropy,corrEntropy,clusterHead,clusterStructure,tier2NumSlot,powerMax)
-sum(sum(Q))
+Y = 0.5*ones(numNodes,tier2NumSlot);
+Y(2,:) = [1 0 0 0];
+Y(1,:) = [0 0 0 0];
+Y(7,:) = [0 0 0 0];
+
+%[Q] = LPsolver(Y,map,idtEntropy,corrEntropy,clusterHead,clusterStructure,tier2NumSlot,powerMax)
+%minValue = sum(sum(Q))
+[Q, Y] = LPsolver_relaxed(Y,map,idtEntropy,corrEntropy,clusterHead,clusterStructure,tier2NumSlot,powerMax,Phi,magicValue);
+minValue = sum(sum(Q))
