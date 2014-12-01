@@ -31,12 +31,12 @@ for i = 1:numNodes
     vecFi(i) = Gamma*2^( 8*idtEntropy(i)/(tau*bandwidthhz) - 1.0 );
 end
 
-%[AA,BB] = powerSolver([3,6],[1,7],matGij,vecFi,bandwidthhz,N0,powerMax)
-%obj = groupBranchAndRelax([3,6;2,4],[1,7;1,7],[5,8,9,10],[7,1,7,1],matGij,vecFi,bandwidthhz,N0,powerMax)
-%RemoveSched(CS,[3,6;2,4])
-%FindHead(CS,RemoveSched(CS,[3,6;2,4]))
-
-m_Tx = [2,5;10,4;3,9;8,6]
-m_Rx = [1,7;1,7;1,7;1,7]
-m_others = RemoveSched(CS,m_Tx)
-%obj = groupBranchAndRelax(m_Tx,m_Rx,m_others,FindHead(CS,m_others),matGij,vecFi,bandwidthhz,N0,powerMax)
+group1 = [2,3,8,10];
+group2 = [4,5,6,9];
+heads = [1,7];
+i = 4;
+for j=1:length(group2)
+    transmitters = [group1(i),group2(j)]
+    [lambdaMax,vec_power] = FindSinrBound(matGij,[group1(i),group2(j)],[1,7]);
+    [1/(lambdaMax-1) sum(vec_power)]
+end
