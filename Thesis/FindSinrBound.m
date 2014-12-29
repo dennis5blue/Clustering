@@ -1,4 +1,4 @@
-function [lambdaMax, vec_power] = FindSinrBound(mat_Gij,vec_Tx,vec_Rx)
+function [gammaMax, vec_power] = FindSinrBound(mat_Gij,vec_Tx,vec_Rx)
     lambdaMax = 0;
     vec_power = [];
     mat_normalizedGain = zeros(length(vec_Tx),length(vec_Tx));
@@ -14,4 +14,5 @@ function [lambdaMax, vec_power] = FindSinrBound(mat_Gij,vec_Tx,vec_Rx)
             vec_power = V(:,i);
         end
     end
+    gammaMax = 1/(lambdaMax-1);
 end
