@@ -6,7 +6,7 @@ import re
 import sys
 
 def main(argv=None):
-	pngSeqPath = "../sourceData/image_png/"
+	pngSeqPath = "../sourceData/image_thesis/"
 	yuvSeqPath = "../sourceData/image_yuv/"
 	
 	output = Popen(["ls", pngSeqPath],stdout=PIPE).communicate()[0] 

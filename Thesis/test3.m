@@ -127,3 +127,61 @@ end
 
 disp(solTree.tostring)
 disp(lbTree.tostring)
+
+% Start figures plotting
+plotTree = lbTree;
+nodeLeft = ones(1,length(plotTree.Node));
+globalub = [1.6817]; % largest one
+globallb = [cell2mat(plotTree.Node(1))];
+globalIndex = [1];
+nodeLeft(1) = 0;
+treeIndex = 1;
+while(sum(nodeLeft)>0)
+    globalIndex = [globalIndex treeIndex];
+    nodeLeft(treeIndex) = 0;
+    if (plotTree.isleaf(treeIndex) == 1)
+        globallb = [globallb globallb(length(globallb))];
+        maxValue = cell2mat(plotTree.Node(treeIndex));
+        [maxValue globalub(length(globalub))]
+        if (maxValue < globalub(length(globalub)) && maxValue>=1.2942) % smallest one
+            globalub = [globalub maxValue];
+        else
+            globalub = [globalub globalub(length(globalub))];
+        end
+        plotTree = plotTree.set(treeIndex,inf);
+        treeIndex = plotTree.getparent(treeIndex);
+        subTree = plotTree.subtree(treeIndex);
+        mat_subTree = cell2mat(subTree.Node);
+        while (length(plotTree.getchildren(treeIndex)) == 1 || all(mat_subTree==inf)==1 )
+            treeIndex = plotTree.getparent(treeIndex);
+            if treeIndex <= 0
+                break;
+            end
+            subTree = plotTree.subtree(treeIndex);
+            mat_subTree = cell2mat(subTree.Node);
+        end        
+    else
+        globalub = [globalub globalub(length(globalub))];
+        nextRunCandidate = plotTree.getchildren(treeIndex);
+        nextRunCandidateValue = cell2mat(plotTree.Node(nextRunCandidate));
+        minValue = min(nextRunCandidateValue);
+        if (minValue > globallb(length(globallb)) && minValue < 1.2942) % smallest one
+            globallb = [globallb minValue];
+        else
+            globallb = [globallb globallb(length(globallb))];
+        end
+        plotTree = plotTree.set(treeIndex,inf);
+        treeIndex = nextRunCandidate(find(nextRunCandidateValue==minValue));
+    end    
+end
+
+xaxis = [1:length(globallb)];
+str_lb = sprintf('lower bound');
+plot(xaxis, globallb, '-','LineWidth',2,'Color', 'g', 'DisplayName',str_lb); hold on;
+str_ub = sprintf('upper bound');
+plot(xaxis, globalub, '-','LineWidth',2,'Color', 'r', 'DisplayName',str_ub);
+xlabel('Iteration');
+ylabel('Tier-2 Power (Watt)');
+legend('show','location','Best');
+grid on;
+hold off;

@@ -25,7 +25,7 @@ bpy.ops.object.delete()
 bpy.ops.object.select_all(action="SELECT")
 cityObjectList = [item.name for item in bpy.data.objects if item.select == True]
 for obj in cityObjectList:
-	bpy.data.objects[obj].location = [-2.5, -2.5, -3.0]
+	bpy.data.objects[obj].location = [-5.0, -5.0, -3.0]
 
 #bpy.ops.group.create(name="myCity")
 #bpy.ops.object.group_link(group="myCity")
@@ -54,8 +54,16 @@ scene.objects.active = lamp_object
 
 #add camera (random position and sensing direction)
 #city radius = 500m
-for cam in range(30):
-	cameraPos = (random.uniform(-5.0,5.0), random.uniform(-5.0,0.0), 0.15)
+for cam in range(10):
+	cameraPos = (random.uniform(-1.0,1.0), random.uniform(-1.0,-3.0), 0.15)
+	cameraRotation = (math.pi*90.0/180, math.pi*0.0/180, -math.pi*random.randrange(0,360,10)/180)
+	bpy.ops.object.camera_add(view_align=False, enter_editmode=False, location=cameraPos, rotation=cameraRotation);
+for cam in range(10):
+	cameraPos = (random.uniform(-3.0,-1.0), random.uniform(1.5,4.0), 0.15)
+	cameraRotation = (math.pi*90.0/180, math.pi*0.0/180, -math.pi*random.randrange(0,360,10)/180)
+	bpy.ops.object.camera_add(view_align=False, enter_editmode=False, location=cameraPos, rotation=cameraRotation);
+for cam in range(10):
+	cameraPos = (random.uniform(1.0,3.0), random.uniform(1.5,4.0), 0.15)
 	cameraRotation = (math.pi*90.0/180, math.pi*0.0/180, -math.pi*random.randrange(0,360,10)/180)
 	bpy.ops.object.camera_add(view_align=False, enter_editmode=False, location=cameraPos, rotation=cameraRotation);
 
@@ -76,7 +84,7 @@ print('\nPrint Scenes...');
 sceneKey = bpy.data.scenes.keys()[0]; 
 print('Using Scene['  + sceneKey + ']');
 c=0;
-logFileName="/home/dennisyu/Documents/Clustering/sourceData/image_paper/log.txt"
+logFileName="/home/dennisyu/Documents/Clustering/sourceData/image_thesis/log.txt"
 logFile=open(logFileName,"w+")
 for obj in bpy.data.objects: 
 # Find cameras that match cameraNames 
@@ -92,7 +100,7 @@ for obj in bpy.data.objects:
         # Render Scene and store the scene 
         bpy.ops.render.render( write_still=True ); 
         RR = "Render Result";
-        bpy.data.images[RR].save_render("/home/dennisyu/Documents/Clustering/sourceData/image_paper/camera_"+str(c)+".png");
+        bpy.data.images[RR].save_render("/home/dennisyu/Documents/Clustering/sourceData/image_thesis/camera_"+str(c)+".png");
         c = c + 1; 
 
 logFile.close()
